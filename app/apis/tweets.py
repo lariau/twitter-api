@@ -2,6 +2,7 @@ from flask_restplus import Namespace, Resource, fields
 from flask import abort
 from app.models import Tweet
 from app import db
+from flask_login import LoginManager, login_required
 
 api = Namespace('tweets')
 
@@ -37,6 +38,7 @@ class TweetResource(Resource):
 
     @api.marshal_with(json_tweet, code=200)
     @api.expect(json_new_tweet, validate=True)
+    @api.login_required
     def patch(self, id):
         tweet = db.session.query(Tweet).get(id)
         if tweet is None:
@@ -60,6 +62,7 @@ class TweetsResource(Resource):
     @api.marshal_with(json_tweet, code=201)
     @api.expect(json_new_tweet, validate=True)
     @api.response(422, 'Invalid tweet')
+    @api.login_required
     def post(self):
         text = api.payload["text"]
         if len(text) > 0:
