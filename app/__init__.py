@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restplus import Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 db = SQLAlchemy()
 
@@ -16,9 +17,13 @@ def create_app():
         return "Goodbye World!"
 
     from .apis.tweets import api as tweets
+    from .apis.users import api as users
     api = Api()
     api.add_namespace(tweets)
+    api.add_namespace(users)
     api.init_app(app)
+    login_manager = LoginManager()
+    login_manager.init_app(app)
 
     app.config['ERROR_404_HELP'] = False
     return app
